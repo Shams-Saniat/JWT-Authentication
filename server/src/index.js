@@ -33,4 +33,26 @@ server.listen(process.env.PORT, () =>
   console.log(`Server listening on port ${process.env.PORT}`)
 );
 
-
+// 1. Register a user
+server.post("/register", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    // 1. Check if the user exists
+    const user = fakeDB.find((user) => user.email === email);
+    if (user) throw new Error("User already exist");
+    // 2. If the user not exists, hash the password
+    const hashedPassword = await hash(password, 10);
+    // 3. Insert the user in "database"
+    fakeDB.push({
+      id: fakeDB.length,
+      email,
+      password: hashedPassword,
+    });
+    res.send({ message: "User Created" });
+    console.log(hashedPassword);
+  } catch (err) {
+    res.send({
+      error: `${err.message}`,
+    });
+  }
+});
