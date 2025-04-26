@@ -12,6 +12,7 @@ const {
 } = require("./tokens.js");
 
 const { fakeDB } = require("./fakeDB.js");
+const { isAuth } = require("./isAuth.js");
 
 // 1. Register a user
 // 2. Login a user
@@ -92,6 +93,21 @@ server.post("/logout", (_req, res) => {
   return res.send({
     message: "Logged  out",
   });
+});
+
+// 4. Protected route
+server.post("/protected", async (req, res) => {
+  try {
+    const userId = isAuth(req);
+    if (userId !== null)
+      res.send({
+        data: "This is protected data",
+      });
+  } catch (err) {
+    res.send({
+      error: `${err.message}`,
+    });
+  }
 });
 
 server.listen(process.env.PORT, () =>
