@@ -82,9 +82,16 @@ server.post("/login", async (req, res) => {
   } catch (err) {
     res.send({
       error: `${err.message}`,
-      
-    })
+    });
   }
+});
+
+// 3. Logout a user
+server.post("/logout", (_req, res) => {
+  res.clearCookie("refreshtoken");
+  return res.send({
+    message: "Logged  out",
+  });
 });
 
 server.listen(process.env.PORT, () =>
